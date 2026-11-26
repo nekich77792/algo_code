@@ -10,6 +10,7 @@ https://eolymp.com/uk/problems/2195
 """
 
 import sys
+import os
 import re
 
 
@@ -146,8 +147,13 @@ def check_spelling(vocab_words: list, text_content: str) -> str:
         return "The usage of the vocabulary is not perfect."
 
 
-def solve():
-    raw_input = sys.stdin.read().splitlines()
+def solve(file_path: str = None):
+    if file_path:
+        with open(file_path, "r", encoding="utf-8") as f:
+            raw_input = f.read().splitlines()
+    else:
+        raw_input = sys.stdin.read().splitlines()
+
     if not raw_input:
         return
 
@@ -189,10 +195,18 @@ def test():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--test":
-        test()
+    if len(sys.argv) > 1:
+        arg = sys.argv[1]
+        if arg == "--test":
+            test()
+        elif os.path.exists(arg):
+            solve(file_path=arg)
+        else:
+            solve()
     else:
         if sys.stdin.isatty():
-            test()
+            print("Введіть дані вхідного тесту (після завершення натисніть Ctrl+Z та Enter):")
+            print("(Або запустіть 'python task7_4.py --test' для автоматичного тесту)")
+            solve()
         else:
             solve()

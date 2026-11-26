@@ -10,6 +10,7 @@ https://eolymp.com/uk/problems/2797
 """
 
 import sys
+import os
 
 
 class OpenAddressingHashSet:
@@ -19,7 +20,6 @@ class OpenAddressingHashSet:
     """
 
     def __init__(self, initial_capacity: int = 16):
-        # Вибираємо степінь двійки для швидкого обчислення залишку через побітове І
         cap = 16
         while cap < initial_capacity:
             cap <<= 1
@@ -98,15 +98,19 @@ class OpenAddressingHashSet:
         return self.size
 
 
-def solve():
-    input_data = sys.stdin.read().split()
+def solve(file_path: str = None):
+    if file_path:
+        with open(file_path, "r", encoding="utf-8") as f:
+            input_data = f.read().split()
+    else:
+        input_data = sys.stdin.read().split()
+
     if not input_data:
         return
 
     n = int(input_data[0])
     phone_numbers = input_data[1:n + 1]
 
-    # Ініціалізуємо хеш-таблицю відповідного розміру для O(1) операцій
     contacts = OpenAddressingHashSet(initial_capacity=max(16, n * 2))
 
     for phone in phone_numbers:
@@ -116,10 +120,6 @@ def solve():
 
 
 def test():
-    # Тест з умови задачі:
-    # 5
-    # 978285527 979972887 979972887 964400127 978285527
-    # Результат має бути 3
     sample_numbers = ["978285527", "979972887", "979972887", "964400127", "978285527"]
     s = OpenAddressingHashSet()
     for num in sample_numbers:
@@ -129,11 +129,18 @@ def test():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--test":
-        test()
-    else:
-        # Якщо ввід не порожній, розв'язуємо задачу; інакше запускаємо самотест
-        if sys.stdin.isatty():
+    if len(sys.argv) > 1:
+        arg = sys.argv[1]
+        if arg == "--test":
             test()
+        elif os.path.exists(arg):
+            solve(file_path=arg)
+        else:
+            solve()
+    else:
+        if sys.stdin.isatty():
+            print("Введіть дані вхідного тесту (після завершення натисніть Ctrl+Z та Enter):")
+            print("(Або запустіть 'python task7_3.py --test' для автоматичного тесту)")
+            solve()
         else:
             solve()

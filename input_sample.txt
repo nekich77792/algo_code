@@ -1,0 +1,5 @@
+3 1
+cat
+dog
+bird
+Cat, dog: "bird"!'
